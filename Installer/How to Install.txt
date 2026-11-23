@@ -1,0 +1,65 @@
+How to install DreamAtlas
+=========================
+
+Requires macOS 14 Sonoma or later. Runs on Apple Silicon Macs only (M1 or
+newer); it won't open on Intel Macs. The Liquid Glass theme needs macOS 26
+or later.
+
+DreamAtlas isn't notarized by Apple, so on a new Mac macOS blocks it the
+first time. Install it as below, and use the Terminal fixes if it fails.
+
+
+INSTALL: Disk image (DreamAtlas-x.x-AppleSilicon.dmg)
+-----------------------------------------------------
+1. Open the .dmg and drag DreamAtlas onto the Applications folder.
+2. Open DreamAtlas from Applications. If macOS says it "can't be opened" or
+   "could not verify" it: click Done (don't move it to the Bin), open
+   System Settings > Privacy & Security, scroll to Security and click
+   "Open Anyway" next to DreamAtlas. Enter your password.
+
+
+IF IT STILL FAILS: Terminal commands
+------------------------------------
+Open Terminal (Applications > Utilities > Terminal), paste a command, press
+Return and type your Mac password when asked (nothing shows as you type).
+
+1. DreamAtlas is installed but won't open, or macOS says it is "damaged":
+
+       sudo xattr -cr /Applications/DreamAtlas.app && open /Applications/DreamAtlas.app
+
+2. "Open Anyway" doesn't appear, or the .dmg itself is blocked:
+
+       xattr -c ~/Downloads/DreamAtlas-*
+
+   then double-click the file again.
+
+3. The morning reminder never shows, or Touch ID unlock keeps failing:
+
+       tccutil reset All app.dreamatlas.mac
+
+   then quit and reopen DreamAtlas, turn the reminder on again in
+   Settings > Capture and allow notifications
+   (System Settings > Notifications > DreamAtlas).
+
+4. Check the Mac is new enough (must say 14 or higher):
+
+       sw_vers -productVersion
+
+
+AFTER INSTALLING
+----------------
+DreamAtlas opens on your journal. Press Option-Command-D from any app to jot
+a dream down in the quick-capture panel, even while the journal is locked.
+Settings (Command-,) has the morning reminder and "open at login" (Capture),
+the Liquid Glass theme (Appearance, macOS 26+), the Touch ID or password lock
+(Privacy; Control-Command-L locks right away), and export and backup (Data).
+The free version holds 15 dreams; a lifetime license unlocks unlimited
+dreams. DreamAtlas never connects to the internet.
+
+Your journal is saved in ~/Library/Application Support/DreamAtlas
+(journal.json). Back it up from Settings > Data before moving to another Mac.
+
+To uninstall (this also deletes your dreams and your license key, so back up
+first): quit DreamAtlas from its menu, then run
+
+       rm -rf /Applications/DreamAtlas.app ~/Library/Application\ Support/DreamAtlas && defaults delete app.dreamatlas.mac

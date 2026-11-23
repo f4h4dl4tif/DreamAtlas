@@ -42,7 +42,19 @@ struct Sidebar: View {
     @EnvironmentObject var state: AppState
     @EnvironmentObject var license: LicenseManager
 
+    @AppStorage(GlassTheme.key) private var glass = false
+
     var body: some View {
+        sidebarContent
+        .toolbar {
+            ToolbarItem {
+                Button { state.newDream() } label: { Label("New Dream", systemImage: "square.and.pencil") }
+                    .help("Record a new dream (⌘N)")
+            }
+        }
+    }
+
+    private var list: some View {
         List(selection: $state.selection) {
             Section {
                 Label("Journal", systemImage: "book.closed").tag(SidebarItem.journal)
@@ -53,12 +65,18 @@ struct Sidebar: View {
             tagSection(.theme)
         }
         .listStyle(.sidebar)
-        .safeAreaInset(edge: .bottom) { footer }
-        .toolbar {
-            ToolbarItem {
-                Button { state.newDream() } label: { Label("New Dream", systemImage: "square.and.pencil") }
-                    .help("Record a new dream (⌘N)")
+    }
+
+    /// With the glass theme the footer card sits below the list rather than over it,
+    /// so tag rows end above the card and never show around or beneath it.
+    @ViewBuilder private var sidebarContent: some View {
+        if glass, #available(macOS 26, *) {
+            VStack(spacing: 0) {
+                list
+                footer
             }
+        } else {
+            list.safeAreaInset(edge: .bottom) { footer }
         }
     }
 
@@ -93,6 +111,27 @@ struct Sidebar: View {
                     .buttonStyle(.link).font(.callout)
             }
             .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .modifier(SidebarFooterSurface())
+        }
+    }
+}
+
+/// Gives the sidebar footer its own surface so the tag list scrolling underneath
+/// no longer shows through the text: a floating glass card with the glass theme,
+/// otherwise a standard bar with a divider.
+private struct SidebarFooterSurface: ViewModifier {
+    @AppStorage(GlassTheme.key) private var glass = false
+    func body(content: Content) -> some View {
+        if glass, #available(macOS 26, *) {
+            content
+                .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .padding(.horizontal, 8)
+                .padding(.bottom, 8)
+        } else {
+            content
+                .background(.bar)
+                .overlay(alignment: .top) { Divider() }
         }
     }
 }

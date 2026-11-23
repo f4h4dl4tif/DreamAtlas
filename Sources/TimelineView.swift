@@ -30,8 +30,7 @@ struct TimelineView: View {
                             Spacer()
                             EmotionDots(emotions: topEmotions(items), size: 10)
                         }
-                        .padding(.horizontal, 28).padding(.vertical, 8)
-                        .background(.bar)
+                        .modifier(MonthHeaderSurface())
                     }
                 }
                 if dreams.isEmpty {
@@ -42,6 +41,7 @@ struct TimelineView: View {
             }
             .padding(.bottom, 24)
         }
+        .glassBackdrop()
         .navigationTitle("Timeline")
     }
 
@@ -115,8 +115,7 @@ struct TimelineRow: View {
                 }
             }
             .padding(12)
-            .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .controlBackgroundColor)))
-            .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color.primary.opacity(0.06)))
+            .cardSurface(radius: 10, strokeOpacity: 0.06)
             .padding(.vertical, 5)
         }
         .padding(.horizontal, 28)
@@ -163,6 +162,24 @@ struct DreamCalendar: View {
                 }
                 Text("More").font(.caption2).foregroundStyle(.secondary)
             }
+        }
+    }
+}
+
+/// Pinned month header: the original full-width bar, or a floating glass capsule when the glass theme is on.
+struct MonthHeaderSurface: ViewModifier {
+    @AppStorage(GlassTheme.key) private var glass = false
+
+    func body(content: Content) -> some View {
+        if glass, #available(macOS 26, *) {
+            content
+                .padding(.horizontal, 16).padding(.vertical, 8)
+                .glassEffect(.regular, in: Capsule())
+                .padding(.horizontal, 28).padding(.vertical, 4)
+        } else {
+            content
+                .padding(.horizontal, 28).padding(.vertical, 8)
+                .background(.bar)
         }
     }
 }

@@ -4,6 +4,7 @@ struct SettingsView: View {
     var body: some View {
         TabView {
             CaptureSettingsView().tabItem { Label("Capture", systemImage: "moon.stars") }
+            AppearanceSettings().tabItem { Label("Appearance", systemImage: "paintpalette") }
             PrivacySettings().tabItem { Label("Privacy", systemImage: "lock") }
             TagSettings().tabItem { Label("Tags", systemImage: "tag") }
             DataSettings().tabItem { Label("Data", systemImage: "externaldrive") }
@@ -151,7 +152,7 @@ struct WelcomeView: View {
                     UserDefaults.standard.set(true, forKey: "hasSeenWelcome")
                     dismiss()
                 }
-                .keyboardShortcut(.defaultAction).controlSize(.large).buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction).controlSize(.large).prominentButton()
             }
             .padding([.horizontal, .bottom], 24)
         }

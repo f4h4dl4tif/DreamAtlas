@@ -41,6 +41,7 @@ struct PatternsView: View {
             }
             .padding(24)
         }
+        .glassBackdrop()
         .navigationTitle("Patterns")
         .navigationSubtitle(range == .all ? "All time" : "Last \(range.rawValue.lowercased())")
     }
@@ -285,7 +286,7 @@ struct TagDetailView: View {
                         DreamRow(dream: d)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(10)
-                            .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .controlBackgroundColor)))
+                            .cardSurface(radius: 10, strokeOpacity: 0)
                     }
                     .buttonStyle(.plain)
                 }
@@ -293,6 +294,7 @@ struct TagDetailView: View {
             }
             .padding(24)
         }
+        .glassBackdrop()
         .navigationTitle(name)
         .navigationSubtitle(kind.singular.capitalized)
     }

@@ -95,7 +95,7 @@ struct LockScreen: View {
                         .padding(.horizontal, 10).padding(.vertical, 4)
                 }
                 .controlSize(.large)
-                .buttonStyle(.borderedProminent)
+                .glassButtonIfOn()
                 .keyboardShortcut(.defaultAction)
                 if let m = lock.message { Text(m).font(.callout).foregroundStyle(.white.opacity(0.8)) }
             }

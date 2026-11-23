@@ -99,7 +99,22 @@ enum QuickCapture {
         }
         guard let panel else { return }
         // Fresh view each time so the previous draft never lingers on screen.
-        panel.contentView = NSHostingView(rootView: QuickCaptureView().environmentObject(JournalStore.shared).tint(.indigo))
+        let host = NSHostingView(rootView: QuickCaptureView().environmentObject(JournalStore.shared).tint(.indigo))
+        if GlassTheme.isOn, #available(macOS 26, *) {
+            // Liquid Glass panel: the window itself goes clear and a glass view fills it.
+            panel.isOpaque = false
+            panel.backgroundColor = .clear
+            let glass = NSGlassEffectView(frame: NSRect(x: 0, y: 0, width: 540, height: 420))
+            glass.cornerRadius = 16
+            host.frame = glass.bounds
+            host.autoresizingMask = [.width, .height]
+            glass.contentView = host
+            panel.contentView = glass
+        } else {
+            panel.isOpaque = true
+            panel.backgroundColor = .windowBackgroundColor
+            panel.contentView = host
+        }
         let screen = NSScreen.screens.first { NSMouseInRect(NSEvent.mouseLocation, $0.frame, false) } ?? NSScreen.main
         if let f = screen?.visibleFrame {
             panel.setFrameOrigin(NSPoint(x: f.midX - panel.frame.width / 2, y: f.midY - panel.frame.height / 2 + f.height * 0.12))
@@ -169,7 +184,7 @@ struct QuickCaptureView: View {
                 Button("Save & Open") { save(open: true) }.disabled(!canSave)
                 Button("Save") { save(open: false) }
                     .keyboardShortcut(.return, modifiers: .command)
-                    .buttonStyle(.borderedProminent)
+                    .prominentButton()
                     .disabled(!canSave)
             }
         }

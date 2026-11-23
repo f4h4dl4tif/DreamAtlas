@@ -66,12 +66,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
     func applicationDidFinishLaunching(_ notification: Notification) {
         MainActor.assumeIsolated {
-            if Snapshot.outputDir == nil {
+            if Snapshot.outputDir == nil && !CommandLine.arguments.contains("--glass-snapshot") {
                 CaptureSettings.shared.applyHotKey()
                 Reminders.shared.start()
             }
         }
         if let dir = Snapshot.outputDir { MainActor.assumeIsolated { Snapshot.run(to: dir) } }
+        #if DEBUG
+        if let dir = GlassSnapshot.outputDir { MainActor.assumeIsolated { GlassSnapshot.run(to: dir) } }
+        #endif
     }
 }
 

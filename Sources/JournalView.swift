@@ -27,7 +27,7 @@ struct JournalView: View {
                     } description: {
                         Text("Dreams fade fast — jot down whatever you remember as soon as you wake up.")
                     } actions: {
-                        Button("Record a Dream") { state.newDream() }.buttonStyle(.borderedProminent)
+                        Button("Record a Dream") { state.newDream() }.prominentButton()
                     }
                 } else {
                     ContentUnavailableView("Select a dream", systemImage: "sparkles", description: Text("Or press ⌘N to record a new one."))
